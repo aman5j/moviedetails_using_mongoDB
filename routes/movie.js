@@ -8,7 +8,8 @@ var City = require('./model/citiesModel');
 var Cinema = require('./model/cinemaModel');
 var Screen = require('./model/screenModel');
 var Movie = require('./model/moviesModel');
-var {ObjectId} = require('mongodb')
+// var Admin = require('./model/adminmodel');
+var {ObjectId, Admin} = require('mongodb')
 
 /* GET home page */
 
@@ -18,6 +19,7 @@ router.get("/createschema", function(req,res){
     var CM = new Cinema()
     var SN = new Screen()
     var M = new Movie()
+    // var Ad = new Admin()
 
     res.send("Created")
 })
@@ -36,12 +38,20 @@ router.get("/fetch_all_states", function(req,res,next){
 });
 
 router.get("/fetch_all_cities", function(req,res,next){
-    City.find({"stateid._id":req.query.stateid}).then((result)=>{
+    City.find({"stateid":req.query.stateid}).then((result)=>{
         res.json({result:result})
     }).catch((e)=>{
         res.json({result:e})
     })
 });
+
+// router.get("/fetch_all_cities", function(req,res,next){
+//     City.find({"stateid._id":req.query.stateid}).then((result)=>{
+//         res.json({result:result})
+//     }).catch((e)=>{
+//         res.json({result:e})
+//     })
+// });
 
 router.get("/fetch_all_cinemas", function(req,res,next){
     Cinema.find({}).then((result)=>{
@@ -52,12 +62,20 @@ router.get("/fetch_all_cinemas", function(req,res,next){
 });
 
 router.get("/fetch_all_screens", function(req,res,next){
-    Screen.find({"cinemaid._id":req.query.cinemaid}).then((result)=>{
+    Screen.find({"cinemaid":req.query.cinemaid}).then((result)=>{
         res.json({result:result})
     }).catch((e)=>{
         res.json({result:e})
     })
 })
+
+// router.get("/fetch_all_screens", function(req,res,next){
+//     Screen.find({"cinemaid._id":req.query.cinemaid}).then((result)=>{
+//         res.json({result:result})
+//     }).catch((e)=>{
+//         res.json({result:e})
+//     })
+// })
 
 router.post('/movie_submit',upload.single('poster'), function(req,res,next){
     try{
@@ -225,13 +243,41 @@ router.post("/edit_movie", function(req, res){
 });
 
 
-/*
+
 
 
 router.get("/displayposterforedit", function(req,res){
     res.render("displayposterforedit",{data:req.query})
 })
 
+router.post("/edit_poster", upload.single("poster"), async function (req, res) {
+    try {
+        const { movieid, oldfilename } = req.body;
+
+        // Update poster in MongoDB
+        await Movie.updateOne(
+            { _id: movieid },
+            { $set: { poster: req.file.filename } }
+        );
+
+        // Delete old image from folder
+        if (oldfilename) {
+            const oldPath = `D:/Mern/moviedetails/public/images/${oldfilename}`;
+
+            if (fs.existsSync(oldPath)) {
+                fs.unlinkSync(oldPath);
+            }
+        }
+
+        res.redirect("/movie/fetch_all_movies");
+    }
+    catch (e) {
+        console.log("Error:", e);
+        res.redirect("/movie/fetch_all_movies");
+    }
+});
+
+/*
 router.post("/edit_poster",upload.single('poster'),function(req,res){
     try{
         pool.query("update movies set poster=? where movieid=?",[req.file.filename, req.body.movieid],function(error,result){

@@ -99,7 +99,7 @@
                     <td><%=item.moviename %></td>
                     <td><%=item.description %></td>
                     <td><%=item.status %></td>
-                    <td><a href="/movie/displayposterforedit?movieid=<%=item.movieid%>&moviename=<%=item.moviename%>&poster=<%=item.poster%>"><img src="/images/<%=item.poster %>" style="width: 60px; height: 60px; border-radius: 30%;" ></a></td>
+                    <td><a href="/movie/displayposterforedit?movieid=<%=item._id%>&moviename=<%=item.moviename%>&poster=<%=item.poster%>"><img src="/images/<%=item.poster %>" style="width: 60px; height: 60px; border-radius: 30%;" ></a></td>
                 </tr>
             
             <% }) %>
