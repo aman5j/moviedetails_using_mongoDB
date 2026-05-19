@@ -15,24 +15,46 @@
 
 // module.exports=pool
 
+// const mongoose = require("mongoose");
+// require('dotenv').config();
+
+// const mongodb_Path = 'mongodb://localhost:27017/logindetails?retryWrites=true&w=majority';
+// const dbUrl = process.env.ATLASDB_URL;
+// console.log(dbUrl);
+
+// var pool = () => {
+//     mongoose.Promise = global.Promise;
+//     var options={}
+
+//     mongoose.connect(dbUrl,
+//         options
+//     );
+
+//      mongoose.connection
+//     .once("open", () => console.log("MongoDb running") )
+//     .on("error", (err) => console.log(err))
+// }
+
+// module.exports=pool
+
 const mongoose = require("mongoose");
 require('dotenv').config();
 
-const mongodb_Path = 'mongodb://localhost:27017/logindetails?retryWrites=true&w=majority';
 const dbUrl = process.env.ATLASDB_URL;
-console.log(dbUrl);
 
-var pool = () => {
-    mongoose.Promise = global.Promise;
-    var options={}
+var pool = async () => {
+    try {
 
-    mongoose.connect(dbUrl,
-        options
-    );
+        await mongoose.connect(dbUrl);
 
-     mongoose.connection
-    .once("open", () => console.log("MongoDb running") )
-    .on("error", (err) => console.log(err))
+        console.log("MongoDB Connected");
+
+    }
+    catch(err) {
+
+        console.log("Database Error:", err);
+
+    }
 }
 
-module.exports=pool
+module.exports = pool;
