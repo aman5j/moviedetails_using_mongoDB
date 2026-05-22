@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var upload = require('./multer');
 var fs = require("fs");
+const path = require('path');
 
 var State = require('./model/statesModel');
 var City = require('./model/citiesModel');
@@ -262,7 +263,8 @@ router.post("/edit_poster", upload.single("poster"), async function (req, res) {
 
         // Delete old image from folder
         if (oldfilename) {
-            const oldPath = `D:/Mern/moviedetails/public/images/${oldfilename}`;
+            // const oldPath = `D:/Mern/moviedetails/public/images/${oldfilename}`;
+            const oldPath = path.join(__dirname, '..', 'public', 'images', oldfilename);
 
             if (fs.existsSync(oldPath)) {
                 fs.unlinkSync(oldPath);
